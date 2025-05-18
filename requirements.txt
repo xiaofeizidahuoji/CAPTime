@@ -1,0 +1,17 @@
+einops==0.8.0
+pyyaml==6.0.2
+matplotlib==3.10.0
+numpy==1.26.4
+pandas==2.2.31
+patool==3.1.0
+reformer-pytorch==1.4.4
+scikit-learn==1.6.0
+scipy==1.15.0
+sktime==0.36.0
+tqdm==4.67.1
+torch==2.4.0
+transformers==4.47.1
+accelerate
+sentencepiece
+protobuf
+

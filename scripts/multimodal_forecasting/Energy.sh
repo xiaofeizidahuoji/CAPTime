@@ -1,0 +1,76 @@
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+model_name=CAPTime
+llm_ckp_dir=openai-community/gpt2
+gpu_id=0
+bs=32
+llm_hidden_size=768  
+test_dir="1"
+des=base
+task=with_text_forecast
+epochs=20
+
+
+# training
+python -u run.py \
+  --use_wandb False\
+  --patience 3\
+  --des $des \
+  --task_name $task \
+  --is_training 1 \
+  --root_path dataset/data_with_text/Energy \
+  --data_path US_GasolinePrice_Week.csv \
+  --model_id Energy_8 \
+  --model $model_name \
+  --data custom_text \
+  --seq_len 36 \
+  --label_len 24 \
+  --token_len 12 \
+  --test_seq_len 36 \
+  --test_label_len 24 \
+  --test_pred_len 12 \
+  --batch_size $bs \
+  --learning_rate 0.0003 \
+  --mlp_hidden_layers 1 \
+  --llm_hidden_size $llm_hidden_size \
+  --mlp_hidden_dim 256 \
+  --train_epochs $epochs \
+  --use_amp \
+  --gpu $gpu_id \
+  --cosine \
+  --tmax $epochs \
+  --drop_last \
+  --llm_ckp_dir $llm_ckp_dir \
+  --test_dir $test_dir \
+
+# testing
+for test_pred_len in 12 24 36 48
+do
+python -u run_test.py \
+  --des $des \
+  --task_name $task \
+  --is_training 0 \
+  --root_path dataset/data_with_text/Energy \
+  --data_path US_GasolinePrice_Week.csv \
+  --model_id Energy_8 \
+  --model $model_name \
+  --data custom_text \
+  --seq_len 36 \
+  --label_len 24 \
+  --token_len 12 \
+  --test_seq_len 36 \
+  --test_label_len 24 \
+  --test_pred_len $test_pred_len \
+  --batch_size $bs \
+  --learning_rate 0.0003 \
+  --mlp_hidden_layers 1 \
+  --llm_hidden_size $llm_hidden_size \
+  --mlp_hidden_dim 256 \
+  --train_epochs 7 \
+  --use_amp \
+  --gpu $gpu_id \
+  --cosine \
+  --tmax 10 \
+  --drop_last \
+  --llm_ckp_dir $llm_ckp_dir \
+  --test_dir $test_dir
+done
